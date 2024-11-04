@@ -201,6 +201,8 @@ impl<Crypto: ImageGeneratorCrypto> ImageGenerator<Crypto> {
             header.pl0_pauser = pauser;
         }
 
+        header.pl0_pauser = 0x21212121u32;
+
         if let Some(owner_config) = &config.owner_config {
             header.owner_data.owner_not_before = owner_config.not_before;
             header.owner_data.owner_not_after = owner_config.not_after;
