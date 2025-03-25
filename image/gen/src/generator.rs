@@ -201,6 +201,7 @@ impl<Crypto: ImageGeneratorCrypto> ImageGenerator<Crypto> {
             header.pl0_pauser = pauser;
         }
 
+        header.flags |= Self::PL0_PAUSER_FLAG;
         header.pl0_pauser = 0x21212121u32;
 
         if let Some(owner_config) = &config.owner_config {
