@@ -187,3 +187,13 @@ pub struct AuthorizationManifest {
 
     pub image_metadata_col: AuthManifestImageMetadataCollection,
 }
+
+#[repr(C)]
+#[derive(IntoBytes, FromBytes, Immutable, KnownLayout, Clone, Copy, Debug, Zeroize, Default)]
+#[cfg_attr(feature = "arbitrary", derive(arbitrary::Arbitrary))]
+pub struct AspeedAuthorizationManifest {
+    pub version: u32,
+    pub sec_version: u32,
+    pub flags: u32,
+    pub owner_pub_keys: AuthManifestPubKeys,
+}
