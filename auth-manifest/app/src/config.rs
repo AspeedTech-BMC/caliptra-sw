@@ -14,8 +14,10 @@ Abstract:
 
 use anyhow::Context;
 use caliptra_auth_man_gen::{
-    AuthManifestECCKeyPair, AuthManifestGeneratorEccKeyConfig, AuthManifestGeneratorKeyConfig,
-    AuthManifestGeneratorLmsKeyConfig, AuthManifestLmsKeyPair,
+    AspeedAuthManifestSignHelper, AuthManifestECCKeyPair, AuthManifestGeneratorEccKeyConfig,
+    AuthManifestGeneratorEccKeyOptionalConfig, AuthManifestGeneratorKeyConfig,
+    AuthManifestGeneratorLmsKeyConfig, AuthManifestGeneratorLmsKeyOptionalConfig,
+    AuthManifestLmsKeyPair,
 };
 use caliptra_auth_man_types::{AuthManifestImageMetadata, AuthManifestPrivKeys};
 use caliptra_auth_man_types::{AuthManifestPubKeys, ImageMetadataFlags};
@@ -85,6 +87,8 @@ pub(crate) struct AspeedAuthManifestConfigFromFile {
     pub owner_man_key_config: Option<AspeedAuthManifestKeyConfigFromFile>,
 
     pub image_metadata_list: Vec<ImageMetadataConfigFromFile>,
+
+    pub sign_helper: Option<AspeedAuthManifestSignHelper>,
 }
 
 /// Load Authorization Manifest Key Configuration from file
@@ -273,5 +277,57 @@ pub(crate) fn lms_key_config_from_file(
         }
     } else {
         Ok(None)
+    }
+}
+
+pub(crate) fn ecc_key_optional_config_from_file(
+    path: &Path,
+    man_config: &Option<AspeedAuthManifestKeyConfigFromFile>,
+) -> anyhow::Result<AuthManifestGeneratorEccKeyOptionalConfig> {
+    if let Some(man_config) = man_config {
+        let mut config = AuthManifestGeneratorEccKeyOptionalConfig::default();
+
+        if let Some(man_ecc_pub_key) = &man_config.ecc_pub_key {
+            let man_ecc_pub_key_path = path.join(man_ecc_pub_key);
+            config.man_ecc_pub_key = Some(Crypto::ecc_pub_key_from_pem(&man_ecc_pub_key_path)?);
+        }
+
+        if let Some(man_ecc_priv_key) = &man_config.ecc_priv_key {
+            let man_ecc_priv_key_path = path.join(man_ecc_priv_key);
+            config.man_ecc_priv_key = Some(Crypto::ecc_priv_key_from_pem(&man_ecc_priv_key_path)?);
+        }
+
+        Ok(config)
+    } else {
+        Ok(AuthManifestGeneratorEccKeyOptionalConfig {
+            man_ecc_pub_key: None,
+            man_ecc_priv_key: None,
+        })
+    }
+}
+
+pub(crate) fn lms_key_optional_config_from_file(
+    path: &Path,
+    man_config: &Option<AspeedAuthManifestKeyConfigFromFile>,
+) -> anyhow::Result<AuthManifestGeneratorLmsKeyOptionalConfig> {
+    if let Some(man_config) = man_config {
+        let mut config = AuthManifestGeneratorLmsKeyOptionalConfig::default();
+
+        if let Some(man_lms_pub_key) = &man_config.lms_pub_key {
+            let man_lms_pub_key_path = path.join(man_lms_pub_key);
+            config.man_lms_pub_key = Some(lms_pub_key_from_pem(&man_lms_pub_key_path)?);
+        }
+
+        if let Some(man_lms_priv_key) = &man_config.lms_priv_key {
+            let man_lms_priv_key_path = path.join(man_lms_priv_key);
+            config.man_lms_priv_key = Some(lms_priv_key_from_pem(&man_lms_priv_key_path)?);
+        }
+
+        Ok(config)
+    } else {
+        Ok(AuthManifestGeneratorLmsKeyOptionalConfig {
+            man_lms_pub_key: None,
+            man_lms_priv_key: None,
+        })
     }
 }

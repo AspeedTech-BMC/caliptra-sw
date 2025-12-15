@@ -13,10 +13,10 @@ Abstract:
 --*/
 mod generator;
 
-pub use generator::AuthManifestGenerator;
-
 use caliptra_auth_man_types::*;
 use caliptra_image_types::*;
+pub use generator::AuthManifestGenerator;
+use serde_derive::{Deserialize, Serialize};
 
 /// Image Generator Vendor Configuration
 #[derive(Default, Clone)]
@@ -63,9 +63,30 @@ pub struct AuthManifestGeneratorEccKeyConfig {
 }
 
 #[derive(Default, Clone)]
+pub struct AuthManifestGeneratorEccKeyOptionalConfig {
+    pub man_ecc_pub_key: Option<ImageEccPubKey>,
+    pub man_ecc_priv_key: Option<ImageEccPrivKey>,
+}
+
+#[derive(Default, Clone)]
 pub struct AuthManifestGeneratorLmsKeyConfig {
     pub fw_lms_key_pair: AuthManifestLmsKeyPair,
     pub man_lms_key_pair: AuthManifestLmsKeyPair,
+}
+
+#[derive(Default, Clone)]
+pub struct AuthManifestGeneratorLmsKeyOptionalConfig {
+    pub man_lms_pub_key: Option<ImageLmsPublicKey>,
+    pub man_lms_priv_key: Option<ImageLmsPrivKey>,
+}
+
+#[derive(Default, Clone, Serialize, Deserialize)]
+pub struct AspeedAuthManifestSignHelper {
+    pub owner_ecc_fw_key_sign_helper: Option<String>,
+    pub owner_ecc_man_key_sign_helper: Option<String>,
+    pub owner_lms_fw_key_sign_helper: Option<String>,
+    pub owner_lms_man_key_sign_helper: Option<String>,
+    pub by_file: Option<bool>,
 }
 
 #[derive(Default, Clone)]
@@ -76,5 +97,8 @@ pub struct AspeedAuthManifestGeneratorConfig {
     pub vendor_lms_key_config: Option<AuthManifestGeneratorLmsKeyConfig>,
     pub owner_ecc_key_config: Option<AuthManifestGeneratorEccKeyConfig>,
     pub owner_lms_key_config: Option<AuthManifestGeneratorLmsKeyConfig>,
+    pub owner_ecc_key_optional_config: AuthManifestGeneratorEccKeyOptionalConfig,
+    pub owner_lms_key_optional_config: AuthManifestGeneratorLmsKeyOptionalConfig,
     pub image_metadata_list: Vec<AuthManifestImageMetadata>,
+    pub sign_helper: AspeedAuthManifestSignHelper,
 }
