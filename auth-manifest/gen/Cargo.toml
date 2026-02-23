@@ -17,9 +17,10 @@ caliptra-auth-man-types = { workspace = true, features = ["std"] }
 caliptra-lms-types.workspace = true
 memoffset.workspace = true
 zerocopy.workspace = true
-hex = "0.4"
-simple_asn1 = "0.6"
-num-bigint = "0.4"
+hex.workspace = true
+simple_asn1.workspace = true
+time.workspace = true
+num-bigint.workspace = true
 serde_derive.workspace = true
 serde.workspace = true
-tempfile = "3"
+tempfile.workspace = true
