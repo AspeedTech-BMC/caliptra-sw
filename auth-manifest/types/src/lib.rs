@@ -134,6 +134,7 @@ bitfield! {
     pub struct ImageMetadataFlags(u32);
     pub image_source, set_image_source: 1, 0;
     pub ignore_auth_check, set_ignore_auth_check: 2;
+    pub svn, set_svn: 23, 16;
     pub load_stage, set_image_load_stage: 31, 30;
 }
 

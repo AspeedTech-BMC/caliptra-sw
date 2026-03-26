@@ -59,6 +59,7 @@ pub struct ImageMetadataConfigFromFile {
     source: u32,
     fw_id: u32,
     ignore_auth_check: bool,
+    svn: Option<u8>,
     load_stage: u32,
 }
 
@@ -181,6 +182,9 @@ pub(crate) fn image_metadata_config_from_file(
         let mut flags = ImageMetadataFlags(0);
         flags.set_ignore_auth_check(image.ignore_auth_check);
         flags.set_image_source(image.source);
+        if let Some(svn) = image.svn {
+            flags.set_svn(svn as u32);
+        }
         flags.set_image_load_stage(image.load_stage);
 
         let image_metadata = AuthManifestImageMetadata {
